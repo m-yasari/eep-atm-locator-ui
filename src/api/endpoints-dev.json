@@ -1,0 +1,26 @@
+{
+    "env": {
+        "method": "GET",
+        "url": "/env",
+        "headers": {
+            "Accept": "application/json"
+        }
+    },
+    "atm-locator": {
+        "method": "GET",
+        "url": "/atm-locator",
+        "params": {
+            "address": "$",
+            "cLat": "$",
+            "cLng": "$",
+            "locale": "$",
+            "rand": "$",
+            "event": "$",
+            "address": "$",
+            "location_type": "$",
+        },
+        "headers": {
+            "Accept": "application/json"
+        }
+    }
+}

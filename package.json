@@ -1,0 +1,60 @@
+{
+  "name": "eep-atm-locator-ui",
+  "version": "1.0.0-alpha",
+  "description": "Advanced ATM Locator UI application",
+  "main": "index.js",
+  "scripts": {
+    "watch": "webpack -d --watch",
+    "dev:build-client": "webpack --config webpack.client.config.js",
+    "dev:start-server": "node server/server.js --static-path dist/static",
+    "build": "npm run build:client && npm run build:server",
+    "build:client": "cross-env ENV=production webpack --config webpack.client.config.js",
+    "build:server": "cross-env ENV=production webpack --config webpack.server.config.js",
+    "dev:start": "cross-env ENV=development webpack-dev-server --hot --inline --config webpack.client.config.js --content-base static",
+    "start": "npm run build:client && node server/server.js --static-path dist/static",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/m-yasari/eep-atm-locator-ui.git"
+  },
+  "author": "Mohsen",
+  "license": "ISC",
+  "homepage": "https://github.com/m-yasari/eep-atm-locator-ui#readme",
+  "dependencies": {
+    "babel-core": "^6.26.3",
+    "react": "^16.10.2",
+    "react-dom": "^16.10.2"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.6.4",
+    "@babel/preset-env": "^7.6.3",
+    "@babel/preset-react": "^7.6.3",
+    "@fortawesome/fontawesome-svg-core": "^1.2.22",
+    "@fortawesome/free-solid-svg-icons": "^5.10.2",
+    "@fortawesome/react-fontawesome": "^0.1.4",
+    "babel-loader": "^8.0.6",
+    "babel-polyfill": "^6.26.0",
+    "copy-webpack-plugin": "^5.0.4",
+    "cross-env": "^5.2.0",
+    "css-loader": "^3.2.0",
+    "express": "^4.17.1",
+    "lodash": ">=4.17.15",
+    "mini-css-extract-plugin": "^0.8.0",
+    "multer": "^1.4.2",
+    "prop-types": "^15.7.2",
+    "react-bootstrap": "^1.0.0-beta.14",
+    "react-redux": "^7.1.1",
+    "redux": "^4.0.4",
+    "redux-logger": "^3.0.6",
+    "redux-thunk": "^2.3.0",
+    "request": "^2.88.0",
+    "webpack": "^4.41.1",
+    "webpack-cli": "^3.3.9",
+    "webpack-dev-server": "^3.8.2",
+    "whatwg-fetch": "^3.0.0"
+  },
+  "engines": {
+    "node": ">=8.0.0"
+  }
+}
