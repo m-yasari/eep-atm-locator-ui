@@ -4,7 +4,6 @@ const https = require('https');
 const express = require('express');
 const request = require('request');
 const constants = require('./constants.js');
-const stubdata = require('/stub.json');
 const app = express();
 
 let targetHost = 'https://www.hsbc.ca/1/PA_ABSL-JSR168/ABSLFCServlet';
@@ -17,6 +16,8 @@ let resetFeature = false;
 let privateKeyFile = null;
 let publicKeyFile = null;
 let caKeyFile = null;
+let serverConfig = './server-config/config.json'
+let apiKey = null;
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -26,6 +27,9 @@ app.get(('/env'), (req, res) => {
   res.send({
     environment: environment,
     resetFeature: resetFeature ,
+    apiKey: config.apiKey,
+    defaultLat: config.defaultLat,
+    defaultLng: config.defaultLng,
   });
 });
 
@@ -116,6 +120,11 @@ processArguments = (args) => {
       case '--reset-feature':
         resetFeature = true;
         break;
+      case '--server-config':
+          if (j<args.length) {
+            serverConfig = args[j++];
+          }
+          break;
     }
   }
   console.log(`Environment: \x1b[32m${environment}\x1b[0m`);
@@ -131,6 +140,9 @@ const httpServer = http.createServer(app);
 httpServer.listen(port, host, () => {
     console.log('Listening on port %d...', httpServer.address().port);
 });
+
+const configFile = fs.readFileSync(serverConfig, 'utf8');
+config = JSON.parse(configFile);
 
 if (privateKeyFile && publicKeyFile) {
   const privateKey = fs.readFileSync(privateKeyFile, 'utf8');
