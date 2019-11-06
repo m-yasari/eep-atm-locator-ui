@@ -73,13 +73,6 @@ class Main extends React.Component {
 
         return (
             <>
-                <Row>
-                <Collapse in={main.activeKey === Constants.CAPTURE_KEY}>
-                    <div>
-                    Discover your nearest working ATM. The grey icons shows the ATM is out of service now.
-                    </div>         
-                </Collapse>
-                </Row>
                 <Capture statePath='capture' />
             </>
         );
