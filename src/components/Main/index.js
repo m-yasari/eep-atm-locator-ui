@@ -76,11 +76,7 @@ class Main extends React.Component {
                 <Row>
                 <Collapse in={main.activeKey === Constants.CAPTURE_KEY}>
                     <div>
-                    Project Scout provides AutoML capabilities for users with minimal knowledge of AI/ML.<br />
-                    Find more information on this <a href="#" 
-                        onClick={()=> this.onWhitePaperClick()}
-                        >whitepaper</a>.
-                    {features.resetFeature ? this.renderReset(main) : ""}
+                    Discover your nearest working ATM. The grey icons shows the ATM is out of service now.
                     </div>         
                 </Collapse>
                 </Row>

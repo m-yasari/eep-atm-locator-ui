@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {Form, Row, Col, Card} from 'react-bootstrap';
+import {Form, Row, Col, Card, Button} from 'react-bootstrap';
 import Step from '../Step';
 import { connect } from 'react-redux';
 import mapDispatchToProps from '../../actions/creator';
@@ -11,13 +11,63 @@ const mapStateToProps = state => {
     return ({ capture: state.capture, features: state.features });
 }
 
+const mapStyle = {
+    width: '450px',
+    height: '450px'
+  };
+
 class Capture extends Step {
     constructor(props, context) {
         super(props, context);
     }
+
+    onAddressSearch() {
+        const { capture, features, actions, statePath} = this.props;
+        actions.callATMLocator({});
+    }
+  
+    onAddressChange(evt) {
+
+    }
+
+    renderIcon(status) {
+        if (status === "on") {
+            return "";
+        }
+        // {this.renderIcon(marker.status)}
+    }
+
+    renderMarkers(locations) {
+        return locations.map(marker => (
+            <Marker
+                title={marker.name}
+                name={marker.locationId}
+                position={{lat: marker.lat, lng: marker.lng}}
+               
+                />
+        ));
+    }
+
+    renderMap() {
+        const { capture, features } = this.props;
+        if (capture.locations && capture.locations.length) {
+            
+        }
+        return (
+        <Map google={this.props.google} zoom={12}
+            initialCenter={{
+                lat: features.defaultLat || 49.243976,
+                lng: features.defaultLng || -123.108091,
+                }} 
+            style={mapStyle}>
+            {capture.locations && capture.locations.length ? 
+                this.renderMarkers(capture.locations) : ""}
+        </Map>
+        );
+    }
   
     render() {
-        const { capture, features, actions, statePath} = this.props;
+        const { capture} = this.props;
 
         return (
             <Card>
@@ -40,19 +90,14 @@ class Capture extends Step {
                                     ref={this.addressInput}
                                     name="address-input"
                                     aria-describedby="address-input-label"
-                                    onChange={(evt) => this.addressChange(evt)}
+                                    onChange={(evt) => this.onAddressChange(evt)}
                                     value={capture.address}
-                                    />
+                                    /><Button size="sm" onClick={() => this.onAddressSearch()}
+                                        >Search</Button>
                             </Row>
                         </Col>
                         <Col sm="8">
-                            <Map google={this.props.google} zoom={12}
-                                initialCenter={{
-                                    /*lat: features.defaultLat,
-                                    lng: features.defaultLng*/
-                                    lat: 49.243976,
-                                    lng: -123.108091
-                                    }} />
+                            {this.renderMap()}
                         </Col>
                     </Row>
                 </Card.Body>

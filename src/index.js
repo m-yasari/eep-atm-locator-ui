@@ -13,8 +13,22 @@ const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 const rootElement = document.getElementById('app');
 const store = createStore(reducers(), initialState, composeEnhancers(middleware));
 
-render(
-    <Provider store={store}>
-        <App />
-    </Provider>, 
-    rootElement);
+let maxWait = 10; // 5 seconds
+
+const startRendering = () => {
+    render(
+        <Provider store={store}>
+            <App />
+        </Provider>, 
+        rootElement);
+};
+
+const idx = setInterval(function() {
+    console.log("maxWait:", maxWait);
+    if (maxWait-- > 0 && window.myEnv) {
+        clearInterval(idx);
+        startRendering();
+    } else if (!maxWait) {
+        clearInterval(idx);
+    }
+}, 500);
