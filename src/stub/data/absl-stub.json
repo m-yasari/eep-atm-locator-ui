@@ -1,0 +1,23 @@
+[
+	{
+		"locationId": "10220",
+		"name": "VANCOUVER, CAMBIE & 42ND",
+		"status": "on",
+		"lng": -123.1157722,
+		"lat": 49.232233
+	},
+	{
+		"locationId": "10060",
+		"name": "VANCOUVER, FRASER & 48TH",
+		"status": "off",
+		"lng": -123.0910441,
+		"lat": 49.2268834
+	},
+	{
+		"locationId": "10090",
+		"name": "VANCOUVER, BROADWAY & ASH",
+		"status": "on",
+		"lng": -123.1180045,
+		"lat": 49.2637363
+	}
+]

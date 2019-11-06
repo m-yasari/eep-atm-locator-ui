@@ -8,19 +8,14 @@ const initialState = {
     },
     main: {
         activeKey: Constants.CAPTURE_KEY,
-        disableTrainTab: true,
-        disableSummaryTab: true,
-        disableLeaderboardTab: true,
-        disablePredictTab: true,
         resetError: null,
         resetInProgress: false,
         resetPopup: false,
     },
     capture: {
         validated: false,
-        parseValidated: false,
+        locations: [],
         inProgress: false,
-        parseResult: 'success',
         errors: {}
     },
 };

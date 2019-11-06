@@ -30,15 +30,11 @@ export const resetCompleted = () => ({ type: type.RESET_COMPLETED });
 
 export const changeMainTab = (activeKey) => ({ type: type.CHANGE_MAIN_TAB, activeKey: activeKey });
 
-export const setDisableSummaryFlag = (flag) => ({ type: type.DISABLE_SUMMARY_TAB, flag: flag});
-
-export const setDisableTrainFlag = (flag) => ({ type: type.DISABLE_TRAIN_TAB, flag: flag});
-
-export const setDisableLeaderboardFlag = (flag) => ({ type: type.DISABLE_LEADERBOARD_TAB, flag: flag});
-
-export const setDisablePredictFlag = (flag) => ({ type: type.DISABLE_PREDICT_TAB, flag: flag});
-
 export const openResetPopup = (showPopup) => ({ type: type.RESET_POPUP, showPopup: showPopup});
+
+export const startLoadingATMs = () => ({ type: type.ATM_LOC_START_LOAD });
+
+export const finishLoadingATMs = (data) => ({ type: type.ATM_LOC_FINISHED_LOAD, data: data });
 
 export const callGetEnvironment = () => (dispatch, getState) => {
     getEnvironment().then(resp => {
@@ -48,6 +44,24 @@ export const callGetEnvironment = () => (dispatch, getState) => {
         return resp.json();
     }).then((json) => { // both fetching and parsing succeeded
         dispatch(setEnvironment(json));
+    }).catch(err => { // either fetching or parsing failed
+        if (err.status >= 400) {
+            console.log(`getEnvironment error: ${err.statusText}`);
+        } else {
+            console.log(`getEnvironment error: ${err}`);
+        }
+    });
+};
+
+export const callATMLocator = (data) => (dispatch, getState) => {
+    dispatch(startLoadingATMs());
+    atmLocator(data).then(resp => {
+        if (!resp.ok) {
+            throw new StatusException(resp.status, resp.statusText);
+        }
+        return resp.json();
+    }).then((json) => { // both fetching and parsing succeeded
+        dispatch(finishLoadingATMs(json));
     }).catch(err => { // either fetching or parsing failed
         if (err.status >= 400) {
             console.log(`getEnvironment error: ${err.statusText}`);
