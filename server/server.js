@@ -6,7 +6,9 @@ const request = require('request');
 const constants = require('./constants.js');
 const app = express();
 
-let targetHost = 'https://www.hsbc.ca/1/PA_ABSL-JSR168/ABSLFCServlet';
+let targetHost = 'http://www.hsbc.ca/1/PA_ABSL-JSR168/ABSLFCServlet';
+let targetParam = '?event=cmd_ajax&cLat=49.243976&cLng=-123.108091&LOCALE=en&rand=123';
+let targetHost2 = 'http://demo5051584.mockable.io/getATMInfo'
 let port = 9000;
 let sslPort = 9443;
 let host = '0.0.0.0';
@@ -34,23 +36,46 @@ app.get(('/env'), (req, res) => {
 });
 
 app.get('/atm-locator', (req,res) => {
-  const targetUrl = `${targetHost}${req.parameters}`;
+  let atmInfo = null;
+  console.log("====",req.params);
+  //const targetUrl = `${targetHost}{req.parameters}`;
+  const targetUrl = `${targetHost}${targetParam}`
   console.log("GET targetUrl:", targetUrl);
   var options = {
     url: targetUrl,
-    method: req.method,
-    headers: {...req.headers}
+    method: req.method
   };
-  request(options)
-    .on('error', err => {
-      console.log(err);
-      res.status('504').send(`Failed connecting to engine: ${err.code}`);
-    })
-    .on('response', res => {
-      // aggregate the response 'res' with 'stubdata' and return the json file.
-    });
+  request(options, (error,response,body)=> {
+       let locations = {};
+       JSON.parse(body).results.map(item => {
+        if ( item.location.addInfo.institution==="HSBC Bank Canada") {
+          locations[item.location.locationId] = item;
+        }
+       });
+      atmStatus(res, locations);
+  });
 });
+const atmStatus = (resp, locations) => {
+  let bodyArr = [];
+  Object.keys(locations).map(param => {
+      bodyArr.push(param);
+  });
 
+  const options = {
+    url: `${targetHost2}?locations=${bodyArr.join('&')}`,
+    method: "GET"
+  };
+  request(options, (error,response,body)=> {
+    let stat;
+    const status = JSON.parse(body);
+    Object.keys(locations).map(locationKey => {
+      if ( (stat=status[locationKey]) ) {
+        locations[locationKey].status = stat;
+      }
+    });
+    resp.send(locations);
+  });
+};
 const prepareFormData = (data) => {
   let bodyArr = [];
   Object.keys(data).map(param => {
@@ -121,10 +146,10 @@ processArguments = (args) => {
         resetFeature = true;
         break;
       case '--server-config':
-          if (j<args.length) {
-            serverConfig = args[j++];
-          }
-          break;
+        if (j<args.length) {
+          serverConfig = args[j++];
+        }
+        break;
     }
   }
   console.log(`Environment: \x1b[32m${environment}\x1b[0m`);
@@ -147,7 +172,7 @@ config = JSON.parse(configFile);
 if (privateKeyFile && publicKeyFile) {
   const privateKey = fs.readFileSync(privateKeyFile, 'utf8');
   const certificate = fs.readFileSync(publicKeyFile, 'utf8');
-  
+
   const credentials = {key: privateKey, cert: certificate};
   if (caKeyFile) {
     const ca = fs.readFileSync(caKeyFile, 'utf8');
