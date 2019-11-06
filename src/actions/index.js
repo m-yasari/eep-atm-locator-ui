@@ -1,10 +1,7 @@
 import * as type from './types';
 import * as _ from 'lodash';
 import * as Constants from '../constants';
-import {modelsConfig} from '../components/Train/config';
-import { importFile, parseSetup, parse, jobStatus, frameSummary, 
-    automlBuilder, automlLeaderboard, modelMetrics, predict, 
-    getEnvironment, uploadFile, removeAll } from '../api';
+import { getEnvironment, atmLocator } from '../api';
 import mapDispatchToProps from './creator';
 
 export const setEnvironment = (env) => ({ type: type.SET_ENVIRONMENT, env: env });
@@ -41,7 +38,22 @@ export const setDisableLeaderboardFlag = (flag) => ({ type: type.DISABLE_LEADERB
 
 export const setDisablePredictFlag = (flag) => ({ type: type.DISABLE_PREDICT_TAB, flag: flag});
 
-export const openSettingsTrain = (showPopup) => ({ type: type.OPEN_SETTINGS_TRAIN, showPopup: showPopup});
-
 export const openResetPopup = (showPopup) => ({ type: type.RESET_POPUP, showPopup: showPopup});
+
+export const callGetEnvironment = () => (dispatch, getState) => {
+    getEnvironment().then(resp => {
+        if (!resp.ok) {
+            throw new StatusException(resp.status, resp.statusText);
+        }
+        return resp.json();
+    }).then((json) => { // both fetching and parsing succeeded
+        dispatch(setEnvironment(json));
+    }).catch(err => { // either fetching or parsing failed
+        if (err.status >= 400) {
+            console.log(`getEnvironment error: ${err.statusText}`);
+        } else {
+            console.log(`getEnvironment error: ${err}`);
+        }
+    });
+};
 

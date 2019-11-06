@@ -5,8 +5,6 @@ const initialState = {
     // initialState
     features: {
         environment: 'production',
-        uploadFeature: false,
-        resetFeature: false,
     },
     main: {
         activeKey: Constants.CAPTURE_KEY,

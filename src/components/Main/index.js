@@ -2,15 +2,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import mapDispatchToProps from '../../actions/creator';
-import { Tabs, Tab, Row, Collapse, Alert, Spinner, Button, Modal } from 'react-bootstrap';
+import { Row, Collapse, Alert, Spinner, Button, Modal } from 'react-bootstrap';
 import Capture from '../Capture';
-import Summary from '../Summary';
 import * as Constants from '../../constants';
 import * as _ from 'lodash';
-import Train from '../Train';
-import Leaderboard from '../Leaderboard';
-import Predict from '../Predict';
-import { DH_NOT_SUITABLE_GENERATOR } from 'constants';
 
 const mapStateToProps = state => ({ main: state.main, features: state.features });
 
@@ -78,39 +73,18 @@ class Main extends React.Component {
 
         return (
             <>
-            <Row>
-            <Collapse in={main.activeKey === Constants.CAPTURE_KEY}>
-                <div>
-                Project Scout provides AutoML capabilities for users with minimal knowledge of AI/ML.<br />
-                Find more information on this <a href="#" 
-                    onClick={()=> this.onWhitePaperClick()}
-                    >whitepaper</a>.
-                {features.resetFeature ? this.renderReset(main) : ""}
-                </div>         
-            </Collapse>
-            </Row>
-            <Tabs
-                id="main-controlled-tab"
-                ref={this.mainTab}
-                activeKey={main.activeKey}
-                onSelect={(key,event) => this.onSelectTab(key, event)}
-            >
-                <Tab eventKey={Constants.CAPTURE_KEY} title="Capture">
-                    <Capture statePath='capture' />
-                </Tab>
-                <Tab eventKey={Constants.SUMMARY_KEY} title="Summary" disabled={main.disableSummaryTab}>
-                    <Summary statePath='summary' />
-                </Tab>
-                <Tab eventKey={Constants.TRAIN_KEY} title="Train" disabled={main.disableTrainTab}>
-                    <Train statePath='train' />
-                </Tab>
-                <Tab eventKey={Constants.LEADERBOARD_KEY} title="Leaderboard" disabled={main.disableLeaderboardTab}>
-                    <Leaderboard statePath='leaderboard' />
-                </Tab>
-                <Tab eventKey={Constants.PREDICT_KEY} title="Predict" disabled={main.disablePredictTab}>
-                    <Predict statePath='predict' />
-                </Tab>
-            </Tabs>
+                <Row>
+                <Collapse in={main.activeKey === Constants.CAPTURE_KEY}>
+                    <div>
+                    Project Scout provides AutoML capabilities for users with minimal knowledge of AI/ML.<br />
+                    Find more information on this <a href="#" 
+                        onClick={()=> this.onWhitePaperClick()}
+                        >whitepaper</a>.
+                    {features.resetFeature ? this.renderReset(main) : ""}
+                    </div>         
+                </Collapse>
+                </Row>
+                <Capture statePath='capture' />
             </>
         );
     }

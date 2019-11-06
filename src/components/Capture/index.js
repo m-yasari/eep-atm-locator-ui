@@ -1,16 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Button from 'react-bootstrap/Button';
-import Row from 'react-bootstrap/Row';
-import Card from 'react-bootstrap/Card';
-import DataFile from '../DataFile';
+import {Form, Row, Col, Card} from 'react-bootstrap';
 import Step from '../Step';
 import { connect } from 'react-redux';
 import mapDispatchToProps from '../../actions/creator';
 import * as Constants from '../../constants';
+import { Map, Marker, GoogleApiWrapper } from 'google-maps-react';
 
 const mapStateToProps = state => {
-    return ({ capture: state.capture, trainFile: state.dataFile.train });
+    return ({ capture: state.capture, features: state.features });
 }
 
 class Capture extends Step {
@@ -19,27 +17,44 @@ class Capture extends Step {
     }
   
     render() {
-        const { capture, actions, statePath, trainFile} = this.props;
+        const { capture, features, actions, statePath} = this.props;
 
         return (
             <Card>
                 <Card.Body> 
-                    <Card.Title>Import Source File</Card.Title>
+                    <Card.Title>ATM Search</Card.Title>
                     <Card.Text>
-                        Start AutoML by loading a train data file.<br/>
-                        <b>Process:</b><br />
-                        <ol>
-                            <li>Load CSV file from a URL (e.g. https://mysite.global.hsbc/personal/43314845/Documents/EEP/data/Titanic/train.csv)</li>
-                            <li>Structured data only</li>
-                            <li>Data size &lt; 1GB</li>
-                            <li>Supports Classification and Regression Models</li>
-                        </ol>
-                        <b>Note: </b>Currently, only CSV format is supported.
+                        Enter your address to find available ATMs
                     </Card.Text>
-                    <DataFile 
-                        statePath={statePath} 
-                        fileLabel="Train"
-                        category="train" />
+                    <Row>
+                        <Col sm="4">
+                            <Row>
+                                <Form.Label id="address-input-label">
+                                    Address
+                                </Form.Label>
+                            </Row>
+                            <Row>
+                                <Form.Control
+                                    type="input"
+                                    disabled={false}
+                                    ref={this.addressInput}
+                                    name="address-input"
+                                    aria-describedby="address-input-label"
+                                    onChange={(evt) => this.addressChange(evt)}
+                                    value={capture.address}
+                                    />
+                            </Row>
+                        </Col>
+                        <Col sm="8">
+                            <Map google={this.props.google} zoom={12}
+                                initialCenter={{
+                                    /*lat: features.defaultLat,
+                                    lng: features.defaultLng*/
+                                    lat: 49.243976,
+                                    lng: -123.108091
+                                    }} />
+                        </Col>
+                    </Row>
                 </Card.Body>
             </Card>
         );
@@ -54,6 +69,12 @@ Capture.propTypes = {
 export default  connect(
     mapStateToProps,
     mapDispatchToProps
-  )(Capture);
+  )( GoogleApiWrapper(() => {
+    console.log("Consumer API KEY:", window.myEnv.apiKey);
+    return {
+        apiKey: (window.myEnv.apiKey)
+    }
+  })(Capture));
+
 
 

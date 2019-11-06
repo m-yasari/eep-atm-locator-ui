@@ -26,7 +26,10 @@ module.exports = {
     mode: nodeEnv,
     entry: {
         client: [
-            './src/index.js',
+            './src/index.js'
+        ],
+        init: [
+            './src/initialize.js',
             babelPollyfill
         ],
         main: './src/css/main.css'
@@ -72,7 +75,7 @@ module.exports = {
             '/api': {
                 changeOrigin: true,
                 secure: false,
-                target: 'http://localhost:54321/',
+                target: 'http://localhost:9000/',
                 pathRewrite: {'^/api/': '/'},
             },
             '/**': {
