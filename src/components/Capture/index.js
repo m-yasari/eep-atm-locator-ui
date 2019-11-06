@@ -31,10 +31,11 @@ class Capture extends Step {
     }
 
     renderIcon(status) {
-        if (status === "on") {
-            return "";
-        }
-        // {this.renderIcon(marker.status)}
+        return {
+            url: `/img/${status==="on" ? 'red' : 'grey'}-pin.svg`,
+            anchor: new google.maps.Point(32,32),
+            scaledSize: new google.maps.Size(32,32)
+        };
     }
 
     renderMarkers(locations) {
@@ -43,7 +44,7 @@ class Capture extends Step {
                 title={marker.name}
                 name={marker.locationId}
                 position={{lat: marker.lat, lng: marker.lng}}
-               
+                icon={this.renderIcon(marker.status)}
                 />
         ));
     }
@@ -74,6 +75,7 @@ class Capture extends Step {
                 <Card.Body> 
                     <Card.Title>ATM Search</Card.Title>
                     <Card.Text>
+                        Discover your nearest working ATM. The grey icons shows the ATM is out of service now.<br />
                         Enter your address to find available ATMs
                     </Card.Text>
                     <Row>
