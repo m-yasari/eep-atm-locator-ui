@@ -16,6 +16,9 @@ const initialState = {
         validated: false,
         locations: [],
         inProgress: false,
+        showingInfoWindow: false,
+        activeMarker: null,
+        selectedPlace: null,
         errors: {}
     },
 };

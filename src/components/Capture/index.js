@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 import mapDispatchToProps from '../../actions/creator';
 import * as Constants from '../../constants';
 import * as _ from 'lodash';
-import { Map, Marker, GoogleApiWrapper } from 'google-maps-react';
+import { Map, Marker, InfoWindow, GoogleApiWrapper } from 'google-maps-react';
 
 const mapStateToProps = state => {
     return ({ capture: state.capture, features: state.features });
@@ -27,9 +27,19 @@ class Capture extends Step {
         actions.callATMLocator({});
     }
   
-    onAddressChange(evt) {
+    onMarkerClick(place, marker, e) {
+        const { actions }  = this.props;
+        
+        actions.showInfoWindow(place, marker);
+    };
 
-    }
+    onMapClick(evt) {
+        const { capture, actions }  = this.props;
+        
+        if (capture.showingInfoWindow) {
+            actions.hideInfoWindow();
+        }
+    };
 
     renderIcon(status) {
         return {
@@ -62,11 +72,40 @@ class Capture extends Step {
                     name={loc}
                     position={{lat: lat, lng: lng}}
                     icon={this.renderIcon(stat)}
+                    onClick={(place, marker, e) => this.onMarkerClick(place, marker, e)}
                     />
                 )
             }
         });
         return locationsTag || "";
+    }
+
+    renderInfoWindowContent() {
+        const { capture } = this.props;
+        if (!capture.showingInfoWindow) {
+            return "";
+        }
+
+        const loc = capture.locations[capture.selectedPlace.name];
+        const status = _.get(loc, "status.ATM");
+        let ATMs=0, activeATMs=0;
+        let aboutATMs = "";
+        if (status && status.length) {
+            status.map(st => {
+                ATMs++;
+                if (st.Status) {
+                    activeATMs++;
+                }
+            });
+            aboutATMs = `Active ATM(s): ${activeATMs} out of ${ATMs}`;
+        }
+
+        return (
+            <div>
+                <h4>{capture.selectedPlace && capture.selectedPlace.title}</h4>
+                <div>{aboutATMs}</div>
+            </div>
+        );
     }
 
     renderMap() {
@@ -78,9 +117,15 @@ class Capture extends Step {
                 lng: features.defaultLng || -123.108091,
                 }}
             streetViewControl={false}
+            onClick={(evt) => this.onMapClick(evt)}
             style={mapStyle}>
             {capture.locations && capture.locations ? 
                 this.renderMarkers(capture.locations) : ""}
+            <InfoWindow
+                marker={capture.activeMarker}
+                visible={capture.showingInfoWindow}>
+                {this.renderInfoWindowContent()}
+            </InfoWindow>
         </Map>
         );
     }

@@ -32,6 +32,10 @@ export const changeMainTab = (activeKey) => ({ type: type.CHANGE_MAIN_TAB, activ
 
 export const openResetPopup = (showPopup) => ({ type: type.RESET_POPUP, showPopup: showPopup});
 
+export const showInfoWindow = (place, marker) => ({ type: type.INFO_WINDOW_SHOW, place: place, marker: marker});
+
+export const hideInfoWindow = () => ({ type: type.INFO_WINDOW_HIDE });
+
 export const startLoadingATMs = () => ({ type: type.ATM_LOC_START_LOAD });
 
 export const finishLoadingATMs = (data) => ({ type: type.ATM_LOC_FINISHED_LOAD, data: data });

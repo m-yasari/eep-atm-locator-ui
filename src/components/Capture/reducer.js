@@ -17,6 +17,18 @@ export const capture = (state = [], action) => {
                 inProgress: false,
             })
             break;
+        case type.INFO_WINDOW_HIDE:
+            state = Object.assign({}, state, {
+                showingInfoWindow: false,
+            })
+            break;
+        case type.INFO_WINDOW_SHOW:
+            state = Object.assign({}, state, {
+                selectedPlace: action.place,
+                activeMarker: action.marker,
+                showingInfoWindow: true,
+            })
+            break;
     }
     return state;
 }
